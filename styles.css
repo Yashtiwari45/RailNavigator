@@ -1,0 +1,231 @@
+/* Existing styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    max-width: 480px; /* Width remains the same */
+    height: 540px; /* Height will adjust based on content */
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: var(--right-bg-color);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Gradient Border Animation */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+                red, 
+                yellow, 
+                blue, 
+                white, 
+                red);
+    background-size: 300% 300%;
+    animation: gradientAnimation 8s ease infinite;
+    z-index: 1;
+    border-radius: 15px;
+    padding: 5px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.container::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    background-color: var(--right-bg-color);
+    z-index: 2;
+    border-radius: 10px;
+}
+
+/* Animation for the gradient */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.right-section {
+    background-color: transparent;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px; /* Adjust padding to fit content */
+    position: relative;
+    z-index: 3;
+}
+
+.form-intro {
+    text-align: center;
+    margin-bottom: 20px; /* Adjust margin for better spacing */
+}
+
+.form-intro h1 {
+    font-size: 24px; /* Adjust font size as needed */
+    margin-bottom: 10px;
+}
+
+.form-intro p {
+    font-size: 16px; /* Adjust font size as needed */
+    line-height: 1.5;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 380px; /* Adjusted max-width for a more compact login box */
+    background-color: var(--right-bg-color);
+    border-radius: 10px;
+    padding: 30px; /* Increased padding for additional height */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-height: 400px; /* Ensure some minimum height for better appearance */
+}
+
+/* Existing styles remain unchanged */
+
+.form-header {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center align items vertically */
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-color);
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.toggle-btn.active {
+    border-bottom: 2px solid #2c3e50;
+}
+
+.toggle-btn + .separator {
+    width: 1px;
+    height: 20px; /* Adjust height to match button size */
+    background-color: var(--text-color); /* Line color */
+    margin: 0 10px; /* Adjust spacing around the line */
+}
+
+
+.toggle-btn.active {
+    border-bottom: 2px solid #2c3e50;
+}
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-content.hidden {
+    display: none;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.submit-btn {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px; /* Adjust font size to fit within the container */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #34495e;
+}
+
+#forgotPassword {
+    margin-bottom: 20px;
+    color: #3498db;
+    text-align: right;
+    text-decoration: none;
+}
+
+#forgotPassword:hover {
+    text-decoration: underline;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#themeButton {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+#themeButton:hover {
+    background-color: #2980b9;
+}
+
+/* Light Mode Variables */
+:root {
+    --background-color: #f7f9fc;
+    --text-color: #333;
+    --right-bg-color: white;
+    --input-border-color: #ddd;
+    --input-bg-color: white;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --background-color: #080000;
+    --text-color: #f5f5f5;
+    --right-bg-color: #252929;
+    --input-border-color: #555;
+    --input-bg-color: #3c3c3c;
+}

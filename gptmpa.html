@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Navigation with Professional 3D Arrow</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+  <style>
+    /* Target the entire routing container */
+    .leaflet-routing-container {
+      background-color: #ffffff;
+      /* Solid white background */
+      border: 2px solid #007BFF;
+      /* Blue border for emphasis */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      /* Light shadow for 3D effect */
+      border-radius: 8px;
+      /* Rounded corners */
+      width: 300px;
+      /* Adjust width */
+      color: #000;
+      /* Black text */
+      padding: 15px;
+      /* Spacing inside */
+      z-index: 1000;
+      /* Ensure it stays on top */
+    }
+
+    /* Target the direction steps inside the container */
+    .leaflet-routing-alternatives-container {
+      background-color: #f9f9f9;
+      /* Slightly lighter background for steps */
+      padding: 10px;
+      /* Spacing for alternatives */
+      border-radius: 6px;
+      /* Rounded corners */
+    }
+
+    /* Target the header of the direction box */
+    .leaflet-routing-container h3 {
+      color: #007BFF;
+      /* Blue heading text */
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-family: 'Arial', sans-serif;
+      /* Clean, readable font */
+    }
+
+    /* Customize the individual steps */
+    .leaflet-routing-alt {
+      padding: 10px;
+      background-color: #e9ecef;
+      /* Light gray background for steps */
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+
+    /* Customize the text in the routing steps */
+    .leaflet-routing-instructions p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333;
+      /* Darker text for instructions */
+    }
+
+    /* Customize hover effects for the steps */
+
+    /* Make sure the leaflet control doesn't overlap the map */
+    .leaflet-top.leaflet-right .leaflet-routing-container {
+      margin-top: 60px;
+      /* Adjust position based on other controls */
+    }
+
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+
+    #search-bar-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      width: calc(100% - 20px);
+      max-width: 400px;
+      padding: 15px;
+      background: rgba(40, 40, 55, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    #search-bar-container input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #2d2d3b;
+      color: #ffffff;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    #info {
+      font-size: 15px;
+      color: #dddddd;
+    }
+
+    #info p {
+      margin: 5px 0;
+    }
+
+    #ar-container {
+      position: absolute;
+      bottom: 10px;
+      right: 2px;
+      width: calc(100% - 20px);
+      max-width: 400px;
+      height: 300px;
+      z-index: 2000;
+      border: 3px solid #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+      display: none;
+    }
+
+    #ar-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #ar-container canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    #enable-ar-btn {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      z-index: 1001;
+      padding: 10px 20px;
+      background-color: #ff5555;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="search-bar-container">
+    <input type="text" id="search" placeholder="Search for a place" />
+    <div id="info">
+      <p>Distance: <span id="distance"></span></p>
+      <p>Time: <span id="time"></span></p>
+    </div>
+  </div>
+  <div id="map"></div>
+  <button id="enable-ar-btn">Enable AR Navigation</button>
+
+  <div id="ar-container">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="ar-canvas"></canvas>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+  <script>
+    // Default Location
+    const defaultLatLng = [47.210750, -122.542540];
+
+    var map = L.map('map').setView(defaultLatLng, 14);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: 'Leaflet &copy; OpenStreetMap contributors',
+      maxZoom: 18
+    }).addTo(map);
+
+    var userMarker = L.marker(defaultLatLng).addTo(map);
+    var destinationLatLng = null;
+    var isARModeEnabled = false;
+    var arrowCanvas = document.getElementById('ar-canvas');
+    var arrowContext = arrowCanvas.getContext('2d');
+    var currentHeading = 0;
+
+    // Initialize user location watch
+    function watchUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(function (position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+          var userLatLng = L.latLng(lat, lng);
+
+          map.setView(userLatLng, 14);
+          userMarker.setLatLng(userLatLng);
+
+          if (destinationLatLng && isARModeEnabled) {
+            updateAR(currentHeading);
+          }
+        }, function () {
+          alert('Unable to retrieve your location.');
+        }, {
+          enableHighAccuracy: true
+        });
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
+
+    // Handle search and routing
+    document.getElementById('search').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        var query = document.getElementById('search').value;
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data && data.length > 0) {
+              var latLng = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+              destinationLatLng = latLng;
+
+              L.Routing.control({
+                waypoints: [
+                  L.latLng(userMarker.getLatLng().lat, userMarker.getLatLng().lng),
+                  L.latLng(latLng.lat, latLng.lng)
+                ],
+                routeWhileDragging: true
+              }).on('routesfound', function (e) {
+                var routes = e.routes;
+                var summary = routes[0].summary;
+                document.getElementById('distance').innerHTML = (summary.totalDistance / 1000).toFixed(2) + ' km';
+                document.getElementById('time').innerHTML = (summary.totalTime / 60).toFixed(2) + ' minutes';
+
+                if (isARModeEnabled) {
+                  updateAR(currentHeading);
+                }
+              }).addTo(map);
+            } else {
+              alert('Location not found!');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    });
+
+    // Enable AR Mode
+    document.getElementById('enable-ar-btn').addEventListener('click', function () {
+      if (!isARModeEnabled) {
+        isARModeEnabled = true;
+        document.getElementById('ar-container').style.display = 'block';
+        document.getElementById('enable-ar-btn').disabled = true;
+        startAR();
+      }
+    });
+
+    // Start AR
+    function startAR() {
+      const video = document.getElementById('video');
+      video.style.display = 'block';
+      arrowCanvas.style.display = 'block';
+
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(stream => {
+          video.srcObject = stream;
+          video.play();
+
+          video.addEventListener('loadeddata', () => {
+            arrowCanvas.width = video.videoWidth;
+            arrowCanvas.height = video.videoHeight;
+
+            // Initialize AR update loop
+            const updateFrame = () => {
+              updateAR(currentHeading);
+              requestAnimationFrame(updateFrame);
+            };
+            updateFrame();
+          });
+        }).catch(error => {
+          console.error('Error accessing camera:', error);
+        });
+
+      // Device orientation event for compass heading
+      window.addEventListener('deviceorientation', function (event) {
+        currentHeading = event.alpha; // alpha gives the compass direction
+        if (destinationLatLng && isARModeEnabled) {
+          updateAR(currentHeading);
+        }
+      });
+    }
+
+    // Update AR with current orientation
+    function updateAR(compassHeading) {
+      if (!destinationLatLng) return;
+
+      const userLatLng = L.latLng(userMarker.getLatLng().lat, userMarker.getLatLng().lng);
+      const destinationHeading = calculateHeading(userLatLng, destinationLatLng);
+
+      const arrowRotation = (compassHeading - destinationHeading + 360) % 360;
+
+      // Clear and draw arrow
+      arrowContext.clearRect(0, 0, arrowCanvas.width, arrowCanvas.height);
+      drawArrow(arrowContext, arrowCanvas.width / 2, arrowCanvas.height / 2, arrowRotation);
+    }
+
+    // Draw 3D Arrow
+    // Draw 3D Arrow with increased length
+    function drawArrow(ctx, x, y, rotation) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation * Math.PI / 180);
+
+  // Set shadow properties for a 3D effect
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Shadow color
+  ctx.shadowBlur = 10; // Shadow blur
+  ctx.shadowOffsetX = 12; // Shadow offset in X
+  ctx.shadowOffsetY = 8;  // Shadow offset in Y
+
+  ctx.beginPath();
+  // Lengthening the Y dimension of the arrow for a taller appearance
+  ctx.moveTo(-20, -70); // Start point (further up)
+  ctx.lineTo(20, -70);  // Right tip (further up)
+  ctx.lineTo(20, 0);    // Right base
+  ctx.lineTo(40, 0);    // Right end (wider base)
+  ctx.lineTo(0, 100);   // Bottom tip (length increased)
+  ctx.lineTo(-40, 0);   // Left end (wider base)
+  ctx.lineTo(-20, 0);   // Left base
+  ctx.lineTo(-20, -70); // Close path (further up)
+  ctx.closePath();
+
+  // Set the arrow color to blue
+  ctx.fillStyle = '#007BFF'; // Fill color (blue)
+  ctx.fill();
+
+  // Optionally, add stroke for outline
+  ctx.strokeStyle = '#000'; // Outline color
+  ctx.lineWidth = 2;        // Outline width
+  ctx.stroke();             // Apply the stroke
+
+  ctx.restore();
+}
+
+
+
+    // Calculate heading from user to destination
+    function calculateHeading(from, to) {
+      const lat1 = from.lat * Math.PI / 180;
+      const lat2 = to.lat * Math.PI / 180;
+      const dLon = (to.lng - from.lng) * Math.PI / 180;
+      const y = Math.sin(dLon) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+      const heading = Math.atan2(y, x) * 180 / Math.PI;
+      return (heading + 360) % 360; // Normalize heading to 0-360
+    }
+
+    // Watch user location
+    watchUserLocation();
+  </script>
+</body>
+
+</html>
