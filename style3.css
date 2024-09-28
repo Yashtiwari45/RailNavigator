@@ -119,7 +119,7 @@ main {
     flex-direction: column;
     gap: 20px;
     padding: 20px;
-    background-color: white;
+    background-color:white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
@@ -263,7 +263,7 @@ footer {
     }
 }
 
-/* Dark Mode */
+/* Dark Mode Styles */
 .dark-mode {
     background-color: #222;
     color: #ddd;
@@ -281,6 +281,19 @@ footer {
 
 .dark-mode .options button {
     background-color: #444;
+}
+
+/* Dark mode for Info Container */
+.dark-mode .info-container {
+    background-color: #333; /* Background color in dark mode */
+    color: white; /* Font color in dark mode */
+}
+.dark-mode .facilities{
+    background-color: #333;
+    color:#000;
+}
+.dark-mode .f2{
+    color:white;
 }
 
 @media (max-width: 480px) {
