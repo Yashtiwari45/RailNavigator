@@ -9,27 +9,26 @@
 </head>
 <body>
     <header>
-        <div class="logo">
-            <h1>Railway Navigation</h1>
-        </div>
+        <h1>Railway Navigation</h1>
         <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><button class="mode-toggle">🌙</button></li> <!-- Mode Switch -->
+          </ul>
         </nav>
-        <button id="modeToggle" class="mode-toggle"><i class="fas fa-sun"></i></button>
-        <div class="search-container">
-            <input type="text" placeholder="Search station or facility..." />
-            <button type="submit"><i class="fas fa-search"></i></button>
-        </div>
-    </header>
-
-    <nav class="options">
-        <button id="startNavigation"><i class="fas fa-map-signs"></i> Start Navigation</button>
-        <button id="setAlarm"><i class="fas fa-bell"></i> Set Alarm</button>
-    </nav>
+      </header>
+    
+      <!-- Search Bar positioned below navigation -->
+      <div class="search-container">
+        <input type="text" placeholder="Search for a place" />
+        <button>🔍</button>
+      </div>
+      <div class="options">
+        <button id="start-navigation">Start Navigation</button>
+        <button id="set-alarm">Set Alarm</button>
+      </div    
 
     <main>
         <section class="station-info">
