@@ -49,7 +49,7 @@
             </div>
 
             <div class="facilities">
-                <h3>Facilities Available at Approaching Station:</h3>
+                <h3 class="f2">Facilities Available at Approaching Station:</h3>
                 <div class="facilities-grid">
                     <div class="facility"><i class="fas fa-restroom"></i> Restroom</div>
                     <div class="facility"><i class="fas fa-utensils"></i> Food Court</div>
@@ -88,25 +88,62 @@
     </div>
 
     <script>
-        document.getElementById('startNavigation').addEventListener('click', function() {
-            window.location.href = 'gptmpa1.html';
-        });
+         document.getElementById('start-navigation').addEventListener('click', function () {
+      // Redirect to gptmpa1.html file
+      window.location.href = 'gptmpa1.html';
+    });
 
-        document.getElementById('setAlarm').addEventListener('click', function() {
-            document.getElementById('alarmModal').style.display = 'flex';
-        });
+    document.getElementById('set-alarm').addEventListener('click', function () {
+        const stationName = prompt('Enter the station name for alarm:');
+      const alarmTime = prompt('Enter alarm time (HH:MM):');
+      
+      const soundChoice = prompt('Choose a sound: 1) Sound1 2) Sound2 3) Sound3');
+      
+      if (alarmTime && stationName && soundChoice) {
+        alert(`Alarm set for ${alarmTime} at ${stationName} with sound choice ${soundChoice}.`);
+        // Additional logic to handle the alarm can be implemented here
+      } else {
+        alert('Please provide all the details to set the alarm.');
+      }
+    });
+    // Functionality for the Mode Toggle (Dark/Light Mode)
+    document.querySelector('.mode-toggle').addEventListener('click', function () {
+      document.body.classList.toggle('dark-mode');
+    });
 
-        document.getElementById('confirmAlarm').addEventListener('click', function() {
-            document.getElementById('alarmModal').style.display = 'none';
-            alert('Alarm set for your destination!');
-        });
-
-        const modeToggle = document.getElementById('modeToggle');
+    const modeToggle = document.getElementById('modeToggle');
         modeToggle.addEventListener('click', function() {
             document.body.classList.toggle('dark-mode');
             const isDarkMode = document.body.classList.contains('dark-mode');
             modeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
+        async function updateArrivalTime() {
+            try {
+                const location = await getCurrentLocation();
+                const userCoords = {
+                    lat: location.coords.latitude,
+                    lng: location.coords.longitude
+                };
+
+                // Replace with your next station coordinates
+                const nextStationCoords = {
+                    lat: 21.145800,
+                    lng: 79.088158
+                };
+
+                const duration = await calculateRoute(userCoords, nextStationCoords);
+                const arrivalTime = new Date(Date.now() + duration * 1000).toLocaleTimeString();
+
+                document.getElementById('arrivalTime').innerText = arrivalTime;
+                document.getElementById('nextStation').innerText = 'Central Station'; // Update with the actual next station name
+
+                setTimeout(updateArrivalTime, 60000); // Update every minute
+            } catch (error) {
+                console.error('Error updating arrival time:', error);
+            }
+        }
+
+        updateArrivalTime();
     </script>
 </body>
 </html>
