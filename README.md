@@ -42,3 +42,27 @@
 There is a tourist who has just arrived to a huge railway station that he hasn't ever been in. The tourist opens the **TrackVision Navigator** application the moment he arrives. The app identifies where they are and they make use of the **search bar** in order to get information about where the nearest food stall is located. Once a destination is chosen, the application indicates the route on the map; however the traveler resorts to **AR mode** so as to be guided through 3D arrows pointing towards the food stall. In the process, they get crowd density real time so that they could avoid being in the crowded areas.
 
 Once aboard and fed, they set an **alarm** at their destination station, content in the knowledge that their app will alert them to board their train.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Output(Current Progress)
+
+### 1st page [Login]
+![Screenshot 2024-10-18 115011](https://github.com/user-attachments/assets/aa9ecbc4-701e-49ff-804f-2117dbd8a332)
+
+### 2nd page [Dashboard - light mode] 
+![Screenshot 2024-10-18 115132](https://github.com/user-attachments/assets/08ab7f7a-efc8-44c9-99e9-e23665123897)
+
+### 2nd page [Dashboard - dark mode]
+![Screenshot 2024-10-18 115146](https://github.com/user-attachments/assets/7849141c-f0c3-42af-a589-db1668647509)
+
+### 2nd page [Dashboard - alarm]
+![Screenshot 2024-10-18 115501](https://github.com/user-attachments/assets/c6247b32-9fc5-4923-9eb4-96e4ed0621a3)
+
+### 3rd page [Navigation]
+![Screenshot 2024-10-18 115427](https://github.com/user-attachments/assets/60e965de-fffb-4399-b7b0-609b06a0700e)
+
+
+
+
