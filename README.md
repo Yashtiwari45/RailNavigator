@@ -1,6 +1,6 @@
-# RailNavigator
+# TrackVision Navigator
 
-**RailNavigator** app enhances the navigation experience within railway stations through the integration of real-time data, augmented reality technology, and vital station information. Here is an in-depth view about how the **Railway Station Navigation** system functions through the app:
+**TrackVision Navigator** app enhances the navigation experience within railway stations through the integration of real-time data, augmented reality technology, and vital station information. Here is an in-depth view about how the **Railway Station Navigation** system functions through the app:
 
 ### 1. Real-Time Navigation
 - **User Location Tracking**: This app is going to use GPS tracking in the real-time location of users within the railway station. As long as a user keeps on changing locations, his position would be reflected on the map to help him navigate through the physical layout of the station.
@@ -39,6 +39,6 @@
 - **Low, Medium and High Density**: The application utilizes a bar that will turn colour depending on how busy a space is. These help users avoid really busy or congested places or find areas that are less noisy 6†source】 .
 
 ### Use Case Example
-There is a tourist who has just arrived to a huge railway station that he hasn't ever been in. The tourist opens the **RailNavigator** application the moment he arrives. The app identifies where they are and they make use of the **search bar** in order to get information about where the nearest food stall is located. Once a destination is chosen, the application indicates the route on the map; however the traveler resorts to **AR mode** so as to be guided through 3D arrows pointing towards the food stall. In the process, they get crowd density real time so that they could avoid being in the crowded areas.
+There is a tourist who has just arrived to a huge railway station that he hasn't ever been in. The tourist opens the **TrackVision Navigator** application the moment he arrives. The app identifies where they are and they make use of the **search bar** in order to get information about where the nearest food stall is located. Once a destination is chosen, the application indicates the route on the map; however the traveler resorts to **AR mode** so as to be guided through 3D arrows pointing towards the food stall. In the process, they get crowd density real time so that they could avoid being in the crowded areas.
 
 Once aboard and fed, they set an **alarm** at their destination station, content in the knowledge that their app will alert them to board their train.
